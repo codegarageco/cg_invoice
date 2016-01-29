@@ -1,0 +1,18 @@
+markdown: kramdown
+name: Invoice
+person_name: Faizal Fikhri Zakaria
+person_email: fzakaria@codegarage.co
+client: CodeGarage
+invoice_currency: USD
+hourly_rate: 70
+invoice_line_items:
+  - title: Eat tofu
+    hours: 40
+invoice_payment_info: |
+  __Account Name:__ Faizal Zakaria \\
+  __Account Bank Name:__ HSBC Malaysia    \\
+  __Account Number:__ ‎123-456789-012      \\
+  __Account SWIFT:__ HBMBMYKL             \\
+  __Account Country:__ Malaysia
+
+
