@@ -1,7 +1,7 @@
 
 # {{page.title}} <a class="pdf-link" href="{{page.pdf_url}}" target="_blank"><span class="mega-octicon octicon-file-pdf"></span></a>
 
-## Invoice description
+## Description
 
 This invoice is for work performed by _{{site.person_name}}_ for _{{site.client}}_.
 
@@ -10,7 +10,7 @@ __Invoice Number:__ {{ page.invoice_number }} \\
 __Date:__ {{ page.date | date_to_string }} \\
 __For period:__ {{ page.period }}
 
-## Invoice line items
+## Line items
 
 {% assign total = 0 %}
 {% assign hours = 0 %}
