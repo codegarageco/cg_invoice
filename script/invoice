@@ -1,4 +1,3 @@
-#!/usr/bin/env ruby
 #encoding: utf-8
 require "date"
 require "fileutils"
@@ -8,7 +7,12 @@ require "psych"
 gen_date = DateTime.now
 if ARGV.length == 1
   gen_date = DateTime.parse ARGV[0]
+elsif ARGV.length == 2
+  config_file = ARGV[1]
 end
+
+config_file ||= File.join(Dir.pwd, "_config.yml")
+
 # Find the last day in the month for the date the invoice is being generated
 last = DateTime.civil gen_date.year, gen_date.month, -1
 
@@ -22,8 +26,7 @@ unless File.directory?(pdfs_dir)
 end
 pdf_filename = File.join(pdfs_dir, last.strftime("%Y-%m-%d-invoice.pdf"))
 
-invoice_data = Psych.load_file(File.join(Dir.pwd, "_config.yml"))
-hourly_rate = invoice_data["hourly_rate"]
+invoice_data = Psych.load_file(config_file)
 invoice_line_items = Psych.dump(invoice_data["invoice_line_items"], :indentation => 2).gsub "---\n", ""
 invoice_payment_info = Psych.dump(invoice_data["invoice_payment_info"], :indentation => 2).gsub "---", ""
 monthly_data =
@@ -35,7 +38,10 @@ invoice_number: \"#{last.to_time.to_i}-CG\"
 period: \"#{last.strftime('%B, %Y')}\"
 pdf_url: \"/pdfs/#{last.strftime("%Y-%m-%d-invoice.pdf")}\"
 invoice_currency: #{invoice_data["invoice_currency"]}
-hourly_rate: #{hourly_rate}
+hourly_rate: #{invoice_data["hourly_rate"]}
+person_name: #{invoice_data["person_name"]}
+person_email: #{invoice_data["person_email"]}
+client: #{invoice_data["client"]}
 invoice_line_items:
 #{invoice_line_items}
 invoice_payment_info:#{invoice_payment_info}

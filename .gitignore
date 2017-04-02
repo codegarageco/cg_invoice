@@ -3,4 +3,4 @@ _config.yml
 _posts
 pdfs
 .bundle
-Gemfile.lock
+storage/*

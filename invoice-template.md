@@ -3,7 +3,7 @@
 
 ## Description
 
-This invoice is for work performed by _{{site.person_name}}_ for _{{site.client}}_.
+This invoice is for work performed by _{{page.person_name}}_ for _{{page.client}}_.
 
 
 __Invoice Number:__ {{ page.invoice_number }} \\
