@@ -1,63 +1,125 @@
-#encoding: utf-8
+#!/usr/bin/env ruby
+# -*- coding: utf-8 -*-
+
 require "date"
 require "fileutils"
 require "pdfkit"
 require "psych"
+require 'getoptlong'
 
-gen_date = DateTime.now
-if ARGV.length == 1
-  gen_date = DateTime.parse ARGV[0]
-elsif ARGV.length == 2
-  config_file = ARGV[1]
+#####################################
+# Options
+#####################################
+opts = GetoptLong.new([ '--help', '-h', GetoptLong::NO_ARGUMENT ],
+				  [ '--config', '-c', GetoptLong::OPTIONAL_ARGUMENT ],
+				  [ '--date', '-d', GetoptLong::OPTIONAL_ARGUMENT ])
+
+gen_date    = nil
+config_file = nil
+opts.each do |opt, arg|
+  case opt
+    when '--help'
+	p <<-EOF
+
+invoice [OPTION]
+
+-help, --h:
+   show help
+
+--config <config file>, -c <config file>:
+   config file, e.g: _config.yml
+
+--date <date>, -d <date>:
+   Date for invoice. e.g: 1/1/2016
+
+      EOF
+	  exit 0
+    when '--config'
+      config_file = arg
+    when '--date'
+	  gen_date = DateTime.parse arg
+  end
 end
 
 config_file ||= File.join(Dir.pwd, "_config.yml")
+gen_date    ||= DateTime.now
+invoice_data  = Psych.load_file(config_file)
 
+#####################################
+# Print out configs
+#####################################
+puts '-' * 30
+puts 'Config data:'
+invoice_data.each_pair do |key, val|
+  puts "\033[32m#{key} : #{val}\033[0m"
+end
+puts '-' * 30
+
+#####################################
 # Find the last day in the month for the date the invoice is being generated
-last = DateTime.civil gen_date.year, gen_date.month, -1
+#####################################
+last = DateTime.civil(gen_date.year, gen_date.month, -1)
+last = DateTime.parse(invoice_data["date"]) if invoice_data["date"]
+puts last
 
+#####################################
 # Set the filename for the invoice's Markdown file
+#####################################
 filename = File.join(Dir.pwd, "_posts", last.strftime("%Y-%m-%d-invoice.markdown"))
 
+#####################################
 # Set the filename for the invoice's PDF file
+#####################################
 pdfs_dir = File.join(Dir.pwd, "pdfs")
 unless File.directory?(pdfs_dir)
   FileUtils.mkdir_p(pdfs_dir)
 end
 pdf_filename = File.join(pdfs_dir, last.strftime("%Y-%m-%d-invoice.pdf"))
 
-invoice_data = Psych.load_file(config_file)
 invoice_line_items = Psych.dump(invoice_data["invoice_line_items"], :indentation => 2).gsub "---\n", ""
 invoice_payment_info = Psych.dump(invoice_data["invoice_payment_info"], :indentation => 2).gsub "---", ""
+short_name = invoice_data['short_name']
+invoice_number = invoice_data['invoice_number'] || "#{short_name}-#{last.to_time.to_i}-CG"
+
+#####################################
+# Generate Markdown
+#####################################
 monthly_data =
 "---
 layout: post
-title: \"Invoice – #{last.strftime('%B, %Y')}\"
+title: \"Invoice – #{invoice_data["period"] || last.strftime('%B, %Y')}\"
 date: #{last.strftime('%Y-%m-%d 10:00:00')}
-invoice_number: \"#{last.to_time.to_i}-CG\"
-period: \"#{last.strftime('%B, %Y')}\"
+invoice_number: \"#{invoice_number}\"
+period: \"#{invoice_data["period"] || last.strftime('%B, %Y')}\"
 pdf_url: \"/pdfs/#{last.strftime("%Y-%m-%d-invoice.pdf")}\"
 invoice_currency: #{invoice_data["invoice_currency"]}
 hourly_rate: #{invoice_data["hourly_rate"]}
 person_name: #{invoice_data["person_name"]}
 person_email: #{invoice_data["person_email"]}
 client: #{invoice_data["client"]}
+excerpt_separator: \"\"
 invoice_line_items:
 #{invoice_line_items}
 invoice_payment_info:#{invoice_payment_info}
 ---
 "
 
-invoice_template = File.open(
-  File.join(Dir.pwd, "invoice-template.md"), "r").read
+invoice_type = invoice_data['invoice_type']
+invoice_type ||= 'default'
+invoice_template = File.open(File.join(Dir.pwd, "invoice-template-#{invoice_type}.md"), "r").read
 
 # Glue the monthly data and the invoice template together, and save the invoice.
 File.open(filename, "w") { |f| f.write(monthly_data + invoice_template) }
+puts "Markdown file: #{filename}"
 
+#####################################
 # Build the site to include the new invoice
+#####################################
 system "bundle exec jekyll build --safe"
 
+#####################################
 # Generate a PDF from the generated HTML file
+#####################################
 generated_filename = File.join(
   Dir.pwd, "_site",
   filename.split("/").last.gsub("-", "/").gsub("markdown", "html"))
