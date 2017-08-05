@@ -11,15 +11,15 @@ require 'getoptlong'
 # Options
 #####################################
 opts = GetoptLong.new([ '--help', '-h', GetoptLong::NO_ARGUMENT ],
-				  [ '--config', '-c', GetoptLong::OPTIONAL_ARGUMENT ],
-				  [ '--date', '-d', GetoptLong::OPTIONAL_ARGUMENT ])
+                  [ '--config', '-c', GetoptLong::OPTIONAL_ARGUMENT ],
+                  [ '--date', '-d', GetoptLong::OPTIONAL_ARGUMENT ])
 
 gen_date    = nil
 config_file = nil
 opts.each do |opt, arg|
   case opt
     when '--help'
-	p <<-EOF
+    puts <<-EOF
 
 invoice [OPTION]
 
@@ -33,11 +33,11 @@ invoice [OPTION]
    Date for invoice. e.g: 1/1/2016
 
       EOF
-	  exit 0
+      exit 0
     when '--config'
       config_file = arg
     when '--date'
-	  gen_date = DateTime.parse arg
+      gen_date = DateTime.parse arg
   end
 end
 
@@ -79,7 +79,7 @@ pdf_filename = File.join(pdfs_dir, last.strftime("%Y-%m-%d-invoice.pdf"))
 invoice_line_items = Psych.dump(invoice_data["invoice_line_items"], :indentation => 2).gsub "---\n", ""
 invoice_payment_info = Psych.dump(invoice_data["invoice_payment_info"], :indentation => 2).gsub "---", ""
 short_name = invoice_data['short_name']
-invoice_number = invoice_data['invoice_number'] || "#{short_name}-#{last.to_time.to_i}-CG"
+invoice_number = invoice_data['invoice_number'] || "#{short_name}-#{last.year}-#{last.month}-CG"
 
 #####################################
 # Generate Markdown
@@ -101,6 +101,8 @@ excerpt_separator: \"\"
 invoice_line_items:
 #{invoice_line_items}
 invoice_payment_info:#{invoice_payment_info}
+exchange_rate: #{invoice_data['exchange_rate'].to_f}
+exchange_currency: #{invoice_data['exchange_currency']}
 ---
 "
 
