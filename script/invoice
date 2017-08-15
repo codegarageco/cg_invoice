@@ -67,6 +67,11 @@ puts last
 #####################################
 filename = File.join(Dir.pwd, "_posts", last.strftime("%Y-%m-%d-invoice.markdown"))
 
+invoice_line_items = Psych.dump(invoice_data["invoice_line_items"], :indentation => 2).gsub "---\n", ""
+invoice_payment_info = Psych.dump(invoice_data["invoice_payment_info"], :indentation => 2).gsub "---", ""
+short_name = invoice_data['short_name']
+invoice_number = invoice_data['invoice_number'] || "#{short_name}-#{last.year}-#{last.month}-#{last.day}-CG"
+
 #####################################
 # Set the filename for the invoice's PDF file
 #####################################
@@ -74,12 +79,7 @@ pdfs_dir = File.join(Dir.pwd, "pdfs")
 unless File.directory?(pdfs_dir)
   FileUtils.mkdir_p(pdfs_dir)
 end
-pdf_filename = File.join(pdfs_dir, last.strftime("%Y-%m-%d-invoice.pdf"))
-
-invoice_line_items = Psych.dump(invoice_data["invoice_line_items"], :indentation => 2).gsub "---\n", ""
-invoice_payment_info = Psych.dump(invoice_data["invoice_payment_info"], :indentation => 2).gsub "---", ""
-short_name = invoice_data['short_name']
-invoice_number = invoice_data['invoice_number'] || "#{short_name}-#{last.year}-#{last.month}-#{last.day}-CG"
+pdf_filename = File.join(pdfs_dir, last.strftime("#{short_name}-%Y-%m-%d-invoice.pdf"))
 
 #####################################
 # Generate Markdown
