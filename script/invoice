@@ -79,7 +79,7 @@ pdf_filename = File.join(pdfs_dir, last.strftime("%Y-%m-%d-invoice.pdf"))
 invoice_line_items = Psych.dump(invoice_data["invoice_line_items"], :indentation => 2).gsub "---\n", ""
 invoice_payment_info = Psych.dump(invoice_data["invoice_payment_info"], :indentation => 2).gsub "---", ""
 short_name = invoice_data['short_name']
-invoice_number = invoice_data['invoice_number'] || "#{short_name}-#{last.year}-#{last.month}-CG"
+invoice_number = invoice_data['invoice_number'] || "#{short_name}-#{last.year}-#{last.month}-#{last.day}-CG"
 
 #####################################
 # Generate Markdown
