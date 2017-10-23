@@ -4,3 +4,4 @@ _posts
 pdfs
 .bundle
 storage/*
+.rvmrc
