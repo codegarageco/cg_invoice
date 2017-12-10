@@ -128,8 +128,11 @@ generated_filename = File.join(
 stylesheet = File.join(Dir.pwd, "_site", "css", "main.css")
 
 html = File.read generated_filename
-kit = PDFKit.new html, :page_size => "A4"
+puts generated_filename
+kit = PDFKit.new html, :page_size => "A4", margin_left: '0in', margin_right: '0in'
+
 kit.stylesheets << stylesheet
+
 kit.to_file pdf_filename
 
 p "Generated your monthly invoice."
