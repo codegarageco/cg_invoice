@@ -117,7 +117,7 @@ puts "Markdown file: #{filename}"
 #####################################
 # Build the site to include the new invoice
 #####################################
-system "bundle exec jekyll build --safe"
+system "bundle exec jekyll build --future --safe"
 
 #####################################
 # Generate a PDF from the generated HTML file
@@ -128,7 +128,6 @@ generated_filename = File.join(
 stylesheet = File.join(Dir.pwd, "_site", "css", "main.css")
 
 html = File.read generated_filename
-puts generated_filename
 kit = PDFKit.new html, :page_size => "A4", margin_left: '0in', margin_right: '0in'
 
 kit.stylesheets << stylesheet
