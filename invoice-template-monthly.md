@@ -18,6 +18,10 @@ __For period:__ {{ page.period }}
 |{{item.title}}|{{item.amount}}|{% endfor %}
 ||__{{total}} {{page.invoice_currency}}__|
 
+{% if page.exchange_rate > 0 %}
+Exchange Rate {{page.exchange_rate}}, total payable in {{page.exchange_currency}}, **{{total | times:page.exchange_rate | round}} {{page.exchange_currency}}**
+{% endif %}
+
 ## Bank Information
 
 {{page.invoice_payment_info}}

@@ -19,7 +19,7 @@ __For period:__ {{ page.period }}
 |{{item.title}}|{{page.hourly_rate}} {{page.invoice_currency}}|{{item.hours}}|{{amount}} {{page.invoice_currency}}|{% endfor %}
 |||{{total_hours}}|__{{total}} {{page.invoice_currency}}__|
 {% if page.exchange_rate > 0 %}
-Exchange Rate {{page.exchange_rate}}, total payable in {{page.exchange_currency}}, **{{total | times:page.exchange_rate}} {{page.exchange_currency}}**
+Exchange Rate {{page.exchange_rate}}, total payable in {{page.exchange_currency}}, **{{total | times:page.exchange_rate | round}} {{page.exchange_currency}}**
 {% endif %}
 
 
