@@ -44,6 +44,19 @@ th:nth-of-type(1) {
     width:50%;
 }
 
+tr:last-child > td {
+  border-top: 1px solid black;
+  border-bottom: 1px solid black;
+}
+
+tr:last-child > td:first-child {
+  border-left: 1px solid black;
+}
+
+tr:last-child > td:last-child {
+  border-right: 1px solid black;
+}
+
 /*****************************************************************************/
 /*
 /* Home
