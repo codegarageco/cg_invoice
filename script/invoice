@@ -69,6 +69,7 @@ filename = File.join(Dir.pwd, "_posts", last.strftime("%Y-%m-%d-invoice.markdown
 
 invoice_line_items = Psych.dump(invoice_data["invoice_line_items"], :indentation => 2).gsub "---\n", ""
 invoice_payment_info = Psych.dump(invoice_data["invoice_payment_info"], :indentation => 2).gsub "---", ""
+address = Psych.dump(invoice_data["address"], :indentation => 2).gsub "---", ""
 short_name = invoice_data['short_name']
 invoice_number = invoice_data['invoice_number'] || "#{short_name}-#{last.year}-#{last.month}-#{last.day}-CG"
 
@@ -103,6 +104,7 @@ invoice_line_items:
 invoice_payment_info:#{invoice_payment_info}
 exchange_rate: #{invoice_data['exchange_rate'].to_f}
 exchange_currency: #{invoice_data['exchange_currency']}
+address: #{address}
 ---
 "
 

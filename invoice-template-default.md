@@ -26,3 +26,6 @@ Exchange Rate {{page.exchange_rate}}, total payable in {{page.exchange_currency}
 ## Bank Information
 
 {{page.invoice_payment_info}}
+
+{{page.address}}
+
