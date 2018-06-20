@@ -98,6 +98,7 @@ hourly_rate: #{invoice_data["hourly_rate"]}
 person_name: #{invoice_data["person_name"]}
 person_email: #{invoice_data["person_email"]}
 client: #{invoice_data["client"]}
+note: #{invoice_data["note"]}
 excerpt_separator: \"\"
 invoice_line_items:
 #{invoice_line_items}

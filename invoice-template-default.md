@@ -29,3 +29,4 @@ Exchange Rate {{page.exchange_rate}}, total payable in {{page.exchange_currency}
 
 {{page.address}}
 
+{{page.note}}

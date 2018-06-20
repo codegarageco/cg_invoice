@@ -10,6 +10,8 @@ __Invoice Number:__ {{ page.invoice_number }} \\
 __Date:__ {{ page.date | date_to_string }} \\
 __For period:__ {{ page.period }}
 
+{{page.note}}
+
 ## Line items
 
 {% assign total = 0 %}
@@ -25,3 +27,4 @@ Exchange Rate {{page.exchange_rate}}, total payable in {{page.exchange_currency}
 ## Bank Information
 
 {{page.invoice_payment_info}}
+
